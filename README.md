@@ -1,2 +1,1 @@
-# neural-networks
-Repository for the Neural Networks course
+Repository of the student Calin Ionut for the Neural Networks course
