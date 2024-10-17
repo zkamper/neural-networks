@@ -12,7 +12,9 @@ def classify(y: np.ndarray[10], label: np.ndarray[10]):
     return np.argmax(y) == np.argmax(label)
 
 def softmax(y: np.ndarray[10]):
-    return np.exp(y) / np.sum(np.exp(y))
+    max_val = np.max(y)
+    # pentru a preveni overflow
+    return np.exp(y - max_val) / np.sum(np.exp(y - max_val))
 
 def cross_entropy(y: np.ndarray[10], label: np.ndarray[10]):
     return - np.sum(label * np.log(y))
@@ -52,8 +54,8 @@ def split(array: list, n: int):
 
 weights = np.zeros((784, 10))
 biases = np.zeros(10)
-alpha = 0.005
-epochs = 200
+alpha = 0.0075
+epochs = 250
 num_threads = 4
 
 train_data = list(zip(train_X, train_Y))
@@ -81,6 +83,8 @@ for epoch in range(epochs):
         biases = biases + temp_biases
         mistakes += misclassified
     accuracy = (train_data_len - mistakes) / train_data_len
+    if accuracy > 0.96:
+        break
     accuracies.append(accuracy)
     print(f'Accuracy: {accuracy}')
     print(f'Epoch {epoch + 1} done')
