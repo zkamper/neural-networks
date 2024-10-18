@@ -1,6 +1,7 @@
 import queue
 import numpy as np
 import threading
+import time
 
 data = np.load('mnist_data.npz')
 train_X = data['train_X']
@@ -54,21 +55,24 @@ def split(array: list, n: int):
 
 weights = np.zeros((784, 10))
 biases = np.zeros(10)
-alpha = 0.0075
+alpha = 0.0002
 epochs = 250
 num_threads = 4
 
 train_data = list(zip(train_X, train_Y))
 train_data_len = len(train_data)
-thread_set_size = train_data_len // num_threads
+thread_set_size = 40_000 // num_threads
 
 accuracies = []
+
+start_time = time.time()
 
 for epoch in range(epochs):
     threads = []
     result_queue = queue.Queue()
     train_data = shuffle(train_data)
-    thread_batches = split(train_data, thread_set_size)
+    train_data_epoch = train_data[:40_000]
+    thread_batches = split(train_data_epoch, thread_set_size)
     for i in range(num_threads):
         thread = threading.Thread(target=train_thread, args=(thread_batches[i], weights, biases, alpha, result_queue))
         threads.append(thread)
@@ -83,11 +87,13 @@ for epoch in range(epochs):
         biases = biases + temp_biases
         mistakes += misclassified
     accuracy = (train_data_len - mistakes) / train_data_len
-    if accuracy > 0.96:
+    if accuracy > 0.95 and epoch > 50:
         break
     accuracies.append(accuracy)
     print(f'Accuracy: {accuracy}')
     print(f'Epoch {epoch + 1} done')
-    
+
+end_time = time.time()
+print(f'Training took {end_time - start_time} seconds')
 # Save the model
 np.savez('model.npz', weights=weights, biases=biases, accuracies=accuracies)
