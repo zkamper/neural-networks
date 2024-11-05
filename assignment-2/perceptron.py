@@ -53,15 +53,16 @@ def shuffle(array: list):
 def split(array: list, n: int):
     return [array[i:i + n] for i in range(0, len(array), n)]
 
+
 weights = np.zeros((784, 10))
 biases = np.zeros(10)
 alpha = 0.0002
 epochs = 250
-num_threads = 4
+num_threads = 12
 
 train_data = list(zip(train_X, train_Y))
 train_data_len = len(train_data)
-thread_set_size = 40_000 // num_threads
+thread_set_size = 6_000 // num_threads
 
 accuracies = []
 
@@ -71,7 +72,7 @@ for epoch in range(epochs):
     threads = []
     result_queue = queue.Queue()
     train_data = shuffle(train_data)
-    train_data_epoch = train_data[:40_000]
+    train_data_epoch = train_data[:6_000]
     thread_batches = split(train_data_epoch, thread_set_size)
     for i in range(num_threads):
         thread = threading.Thread(target=train_thread, args=(thread_batches[i], weights, biases, alpha, result_queue))
