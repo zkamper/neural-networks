@@ -1,6 +1,7 @@
 notebook
+numpy~=2.1.3
+matplotlib
+tqdm
 torch
 torchvision
-torchaudio
-numpy
-matplotlib
+pandas
