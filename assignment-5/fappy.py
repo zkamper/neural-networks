@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 from utils import img_processor
+from utils import Critic
 
 
 def sigmoid(x):
@@ -20,11 +21,10 @@ FRAMES_TO_SKIP_JUMP = 10
 env.reset()
 display_env.reset()
 index = 0
+
 while True:
 
-    # retea neuronala 1
     action = env.action_space.sample()
-
     _, reward, terminated, _, info = env.step(action)
     index += 1
     if index == 5:
@@ -42,10 +42,10 @@ while True:
         for _ in range(FRAMES_TO_SKIP_JUMP):
             _, reward, terminated, _, info = env.step(0)
             display_env.step(0)
+
             if terminated:
                 break
     if terminated:
         break
-
 
 env.close()
