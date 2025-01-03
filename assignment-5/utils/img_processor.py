@@ -32,6 +32,8 @@ def process_image(image):
     final_state = pipes
     final_state = np.where(bird_mask == 255, 127, final_state)
 
+    final_state = np.where(final_state == 255, 1, final_state)
+    final_state = np.where(final_state == 127, 0.5, final_state)
     # plt.imshow(bird_mask, cmap='gray')
     # plt.show()
     # plt.imshow(pipes, cmap='gray')
