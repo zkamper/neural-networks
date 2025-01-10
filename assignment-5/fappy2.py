@@ -15,7 +15,7 @@ def init_weights(l):
 
 class DQNAgent:
     def __init__(self, input_shape, num_actions, batch_size=32, gamma=0.99, eps=1, eps_min=0.01, eps_decay=0.999, replay_buffer=5_000):
-        self.env = gymnasium.make("FlappyBird-v0", render_mode = "rgb_array")
+        self.env = gymnasium.make("FlappyBird-v0", render_mode = "rgb_array",use_lidar = False)
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.policy_net = DQN(input_shape, num_actions).to(self.device)
