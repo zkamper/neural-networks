@@ -34,6 +34,11 @@ class DQNAgent:
         self.eps_min = eps_min
         self.eps_decay = eps_decay
 
+        # pentru statistici
+        self.epoch = np.array([])
+        self.rewards = np.array([])
+        self.scores = np.array([])
+
     def choose_action(self, state):
         if np.random.rand() <= self.eps:
             return self.env.action_space.sample()
@@ -81,26 +86,33 @@ class DQNAgent:
 
             done = False
             ep_return = 0
+            score = 0
 
             while not done:
                 action = self.choose_action(state)
-                _, reward, done, _, _ = self.env.step(action)
+                _, reward, done, _, info = self.env.step(action)
                 next_state = process_image(self.env.render())
                 next_state = np.append(state[1:], [next_state], axis=0)
                 self.memory.push(state, action, reward, next_state, done)
                 state = next_state
                 ep_return += reward
+                score = info['score']
                 self.train_batch()
 
             if ep_return > max_return:
                 max_return = ep_return
                 torch.save(self.policy_net.state_dict(), f'models/best_model_{ep_return:.1f}.pth')
 
+            self.epoch = np.append(self.epoch, epoch)
+            self.rewards = np.append(self.rewards, ep_return)
+            self.scores = np.append(self.scores, score)
+
             if epoch % target_update == 0:
                 self.update_target_net()
 
             if epoch % 20 == 0:
                 print(f'Epoch: {epoch}, Return: {ep_return:.1f}')
+                np.savez('stats.npz', epoch=self.epoch, rewards=self.rewards, scores=self.scores)
 
         self.env.close()
 
