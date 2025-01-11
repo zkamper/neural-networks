@@ -42,8 +42,6 @@ def train_a2c(actor, critic, gamma=GAMMA, lr_a=LEARNING_RATE, lr_c=LEARNING_RATE
 
     first_actions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,0, 0 , 1,0, 0, 0, 0, 0, 0, 0,0, 0 , 0, 0,0,1]
 
-    critic_losses, act_losses = [], []
-
     while torch.min(last_10_scores) < GOAL_SCORE and episode < epochs:
         episode += 1
         seed = np.random.randint(0, 1000)
@@ -56,9 +54,9 @@ def train_a2c(actor, critic, gamma=GAMMA, lr_a=LEARNING_RATE, lr_c=LEARNING_RATE
 
         ep_return = 0
         done = False
-        # state = img_processor.process_image(env.render())
-        # state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(device)
-        state = torch.tensor(obs, dtype=torch.float32).unsqueeze(0).to(device)
+        state = img_processor.process_image(env.render())
+        state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(device)
+        # state = torch.tensor(obs, dtype=torch.float32).unsqueeze(0).to(device)
 
         while not done:
             # actor
@@ -89,9 +87,9 @@ def train_a2c(actor, critic, gamma=GAMMA, lr_a=LEARNING_RATE, lr_c=LEARNING_RATE
                         break
 
 
-            # next_state = img_processor.process_image(env.render())
-            # next_state_tensor = torch.FloatTensor(next_state).unsqueeze(0).to(device)
-            next_state = torch.tensor(new_obs, dtype=torch.float32).unsqueeze(0).to(device)
+            next_state = img_processor.process_image(env.render())
+            next_state_tensor = torch.FloatTensor(next_state).unsqueeze(0).to(device)
+            # next_state = torch.tensor(new_obs, dtype=torch.float32).unsqueeze(0).to(device)
 
             # train_penalty = max(0, frames_to_penalize - step) * 0.1
             # reward -= train_penalty
@@ -135,8 +133,8 @@ def train_a2c(actor, critic, gamma=GAMMA, lr_a=LEARNING_RATE, lr_c=LEARNING_RATE
     display_env.close()
 
 if __name__ == "__main__":
-    # actor = Actor(2).to(device)
-    # critic = Critic().to(device)
-    actor = Actor2(180, 2).to(device)
-    critic = Critic2(180).to(device)
+    actor = Actor(2).to(device)
+    critic = Critic().to(device)
+    # actor = Actor2(180, 2).to(device)
+    # critic = Critic2(180).to(device)
     train_a2c(actor, critic)

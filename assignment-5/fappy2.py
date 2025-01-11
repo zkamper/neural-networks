@@ -112,12 +112,12 @@ class DQNAgent:
 
             if epoch % 20 == 0:
                 print(f'Epoch: {epoch}, Return: {ep_return:.1f}')
-                np.savez('stats.npz', epoch=self.epoch, rewards=self.rewards, scores=self.scores)
+                np.savez('plots/stats.npz', epoch=self.epoch, rewards=self.rewards, scores=self.scores)
 
         self.env.close()
 
 if __name__ == '__main__':
-    agent = DQNAgent((4, 72, 72), 2, replay_buffer=50_000, gamma=0.95)
+    agent = DQNAgent((4, 72, 72), 2, replay_buffer=25_000, gamma=0.95)
     if not os.path.exists('models'):
         os.makedirs('models')
-    agent.train(epochs=10_000, target_update=5)
+    agent.train(epochs=15_000, target_update=5)
