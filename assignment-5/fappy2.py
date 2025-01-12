@@ -112,7 +112,7 @@ class DQNAgent:
 
             if epoch % 20 == 0:
                 print(f'Epoch: {epoch}, Return: {ep_return:.1f}')
-                np.savez('plots/stats.npz', epoch=self.epoch, rewards=self.rewards, scores=self.scores)
+                np.savez('stats.npz', epoch=self.epoch, rewards=self.rewards, scores=self.scores)
 
         self.env.close()
 

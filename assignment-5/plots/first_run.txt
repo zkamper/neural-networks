@@ -1,6 +1,0 @@
-Replay Buffer 50k
-lr = 0.001
-gamma = 0.95
-target_update = 5
-batch_size = 32
-epochs = 5k

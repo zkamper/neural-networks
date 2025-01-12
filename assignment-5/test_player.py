@@ -47,7 +47,7 @@ class DQNPlayer:
 
                 _, reward, done, _, _ = self.env_rgb.step(action)
                 _, _, _, _, info = self.env_human.step(action)
-                print(info)
+                # print(info)
                 total_reward += reward
 
                 frame = self.env_rgb.render()
